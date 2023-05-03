@@ -429,4 +429,23 @@ class TeamTourney(models.Model):
     pass_completion_percentile = models.FloatField(blank=True, null=True)
     total_passes_gp_percentile = models.FloatField(blank=True, null=True)
     successful_passes_gp_percentile = models.FloatField(blank=True, null=True)
+
+#easy use for bokeh
+class BokehData(models.Model):
+    Event = models.CharField(blank=True, null=True, max_length=100)
+    Perspective = models.CharField(blank=True, null=True, max_length=100)
+    Team = models.CharField(blank=True, null=True, max_length=100)
+    Game = models.CharField(blank=True, null=True, max_length=100)
+    Player = models.CharField(blank=True, null=True, max_length=100)
+    State = models.CharField(blank=True, null=True, max_length=100)
+    color = models.CharField(blank=True, null=True, max_length=100)
+    shape = models.CharField(blank=True, null=True, max_length=100)
+    Team = models.CharField(blank=True, null=True, max_length=100)
+    Details = models.CharField(blank=True, null=True, max_length=100)
+    x = models.FloatField(blank=True, null=True)
+    y = models.FloatField(blank=True, null=True)
+    x1 = models.FloatField(blank=True, null=True)
+    x2 = models.FloatField(blank=True, null=True)
+    y1 = models.FloatField(blank=True, null=True)
+    y2 = models.FloatField(blank=True, null=True)
     
