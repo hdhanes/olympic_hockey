@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+{% extends "olympic/base.html" %}
+{% load static %}
+{% block body_block %}
+<html lang="en" dir="'ltr">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+<body>
+
+    <br>
+
+    <div class="container">
+        <form action="" method="get" align="right" onkeydown="return event.key != 'Enter';">
+
+            <div class="form-group form-inline">
+    
+                    <div class="col-4">
+                        <label for="display_select" style="font-weight: bold; padding-right: 20px;">Display:</label>
+                        <select id="display_select" name="display" class="form-select form-select-md custom-select pull-left" style="width: 150px;">
+                            {% for d in all_displays %}
+                                <option value = "{{ d }}"
+                                    {% if d == curr_display %}selected="selected"{% endif %}>
+                                    {{ d }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div> 
+    
+                    <div class="col-4">
+                        <label for="data_select" style="font-weight: bold;">Data:</label>
+                        <select id="data_select" name="data" class="form-select form-select-md custom-select pull-left" style="width: 150px;">
+                            {% for d in all_data %}
+                                <option value = "{{ d }}"
+                                    {% if d == curr_data %}selected="selected"{% endif %}>
+                                    {{ d }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <div class="col-4">
+                        <label for="state_select" style="font-weight: bold;">State:</label>
+                        <select id="state_select" name="state" class="form-select form-select-md custom-select pull-left" style="width: 150px;">
+                            {% for s in all_states %}
+                                <option value = "{{ s }}"
+                                    {% if s == curr_state %}selected="selected"{% endif %}>
+                                    {{ s }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+            </div>
+    
+    
+        </form>
+
+        <h2 style="font-weight: bold;">Team Summary</h2>
+        <div id="outertable">
+            {% if curr_data == 'Box Score' %}
+              <table style="text-align: center; width:100%; margin: 0px; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);" id="mytable1">
+                <col width="20%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <col width="8%"/>
+                <thead style="height: 40px;">
+                  <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Team</td>
+                  <td colspan="3" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Goals</td>
+                  <td colspan="6" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Shots</td>
+              </thead> 
+                <thead style="border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+                    <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+                    <th title="Games played" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">GP</th>
+                    <th title="Goals scored per game" style="color: #d62718; font-weight: bold;">GF/GP</th>
+                    <th title="Goals against per game" style="color: #d62718; font-weight: bold;">GA/GP</th>
+                    <th title="Proportion of all goals scored that were goals for" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">GF%</th>
+                    <th title="Shots for per game" style = "color: #d62718; font-weight: bold;">SF/60</th>
+                    <th title="Shots against per game" style = "color: #d62718; font-weight: bold;">GA/60</th>
+                    <th title="Proportion of all shots that were shots for" style = "color: #d62718; font-weight: bold;">Shot Share</th>
+                    <th title="Team shooting %" style = "color: #d62718; font-weight: bold;">Shooting%</th>
+                    <th title="Save%" style = "color: #d62718; font-weight: bold;">Save%</th>
+                    <th title="Team Shot% + Save%" style = "color: #d62718; font-weight: bold;">PDO</th>
+                </thead>
+                <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+                <tr></tr> 
+                {% for tt in all_tt %}
+                {% if curr_display != 'Rank' %}
+                <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+                    <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+                    <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+                    <td style="background-color: {{ tt.gf_gp_percentile_color }};">{{ tt.gf_gp }}</td>
+                    <td style="background-color: {{ tt.ga_gp_percentile_color }};">{{ tt.ga_gp }}</td>
+                    <td style="border-right: gray 0.75px solid; background-color: {{ tt.gf_percent_percentile_color }};">{% widthratio tt.gf_percent 1 100 %}%</td>
+                    <td style="background-color: {{ tt.shots_for_gp_percentile_color }};">{{ tt.shots_for_gp }}</td>
+                    <td style="background-color: {{ tt.shots_against_gp_percentile_color }};">{{ tt.shots_against_gp }}</td>
+                    <td style="background-color: {{ tt.shots_share_gp_percentile_color }};">{% widthratio tt.shots_share_gp 1 100 %}%</td>
+                    <td style="background-color: {{ tt.shooting_percent_percentile_color }};">{% widthratio tt.shooting_percent 1 100 %}%</td>
+                    <td style="background-color: {{ tt.save_percentage_percentile_color }};">{{ tt.save_percentage|floatformat:3 }}</td>
+                    <td style="background-color: {{ tt.PDO_percentile_color }};">{{ tt.PDO|floatformat:3 }}</td>
+                </tr>
+                {% else %}
+                <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+                    <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+                    <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+                    <td style="background-color: {{ tt.gf_gp_percentile_color }};">{{ tt.gf_gp_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.ga_gp_percentile_color }};">{{ tt.ga_gp_percentile|floatformat:0 }}</td>
+                    <td style="border-right: gray 0.75px solid; background-color: {{ tt.gf_percent_percentile_color }};">{{ tt.gf_percent_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.shots_for_gp_percentile_color }};">{{ tt.shots_for_gp_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.shots_against_gp_percentile_color }};">{{ tt.shots_against_gp_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.shots_share_gp_percentile_color }};">{{ tt.shots_share_gp_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.shooting_percent_percentile_color }};">{{ tt.shooting_percent_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.save_percentage_percentile_color }};">{{ tt.save_percentage_percentile|floatformat:0 }}</td>
+                    <td style="background-color: {{ tt.PDO_percentile_color }};">{{ tt.PDO_percentile|floatformat:0 }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+
+        {% elif curr_data == 'Transition' %}
+
+        <table style="text-align: center; width:100%; margin: 0px; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);" id="mytable1">
+          <col width="16%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <col width="7%"/>
+          <thead style="height: 40px;">
+            <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Team</td>
+            <td colspan="4" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Exits</td>
+            <td colspan="4" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Entries</td>
+            <td colspan="3" style="text-align: middle; background-color: #F1959B; color: white; font-weight: bold; border-right: gray 0.75px solid;">Entries Against</td>
+        </thead> 
+          <thead style="border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+              <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+              <th title="Games played" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">GP</th>
+              <th title="Controlled exits per game" style="color: #d62718; font-weight: bold;">Crtl Exit/GP</th>
+              <th title="Proportion of exits that are with control" style="color: #d62718; font-weight: bold;">CX%</th>
+              <th title="Proportion of exits that are without control" style="color: #d62718; font-weight: bold;">UX%</th>
+              <th title="Proportion of exits that resulted in a turnover" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">FX%</th>
+              <th title="Controlled entries per game" style = "color: #d62718; font-weight: bold;">Crtl Entries/GP</th>
+              <th title="Proportion of entries that are with control" style = "color: #d62718; font-weight: bold;">CE%</th>
+              <th title="Proportion of entries that are without control" style = "color: #d62718; font-weight: bold;">UE%</th>
+              <th title="Proportion of entries that resulted in a turnover" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">FE%</th>
+              <th title="Controlled entries against per game" style = "color: #d62718; font-weight: bold;">Ctrl Entr Ag./GP</th>
+              <th title="Proportion of entries against that were with control " style = "color: #d62718; font-weight: bold;">Ctrl Ent Ag.%</th>
+              <th title="Proportion of entries against that resulted in a turnover" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">Zone Denial%</th>
+          </thead>
+          <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+          <tr></tr> 
+          {% for tt in all_tt %}
+          {% if curr_display != 'Rank' %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.cx_gp_percentile_color }};">{{ tt.cx_gp }}</td>
+              <td style="background-color: {{ tt.cx_rate_percentile_color }};">{% widthratio tt.cx_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.ux_rate_percentile_color }};">{% widthratio tt.ux_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.fx_rate_percentile_color }}; border-right: gray 0.75px solid;">{% widthratio tt.fx_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.ce_gp_percentile_color }};">{{ tt.ce_gp }}</td>
+              <td style="background-color: {{ tt.ce_rate_percentile_color }};">{% widthratio tt.ce_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.ue_rate_percentile_color }};">{% widthratio tt.ue_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.fe_rate_percentile_color }};border-right: gray 0.75px solid;">{% widthratio tt.fe_rate 1 100 %}%</td>
+              <td style="background-color: {{ tt.ce_against_gp_percentile_color }};">{{ tt.ce_against_gp }}</td>
+              <td style="background-color: {{ tt.ce_against_rate_percentile_color }};">{% widthratio tt.ce_against_rate 1 100 %}%</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.zone_denial_rate_percentile_color }};">{% widthratio tt.zone_denial_rate 1 100 %}%</td>
+          </tr>
+          {% else %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.cx_gp_percentile_color }};">{{ tt.cx_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.cx_rate_percentile_color }};">{{ tt.cx_rate_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ux_rate_percentile_color }};">{{ tt.ux_rate_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid; background-color: {{ tt.fx_rate_percentile_color }};">{{ tt.fx_rate_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ce_gp_percentile_color }};">{{ tt.ce_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ce_rate_percentile_color }};">{{ tt.ce_rate_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ue_rate_percentile_color }};">{{ tt.ue_rate_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.fe_rate_percentile_color }};">{{ tt.fe_rate_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ce_against_gp_percentile_color }};">{{ tt.ce_against_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ce_against_rate_percentile_color }};">{{ tt.ce_against_rate_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.zone_denial_rate_percentile_color }};">{{ tt.zone_denial_rate_percentile|floatformat:0 }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+      </table>
+
+      {% elif curr_data == 'Faceoffs' %}
+
+        <table style="text-align: center; width:100%; margin: 0px; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);" id="mytable1">
+          <col width="19%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <thead style="height: 40px;">
+            <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Team</td>
+            <td colspan="2" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Base</td>
+            <td colspan="6" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Zones</td>
+        </thead> 
+          <thead style="border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+              <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+              <th title="Games played" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">GP</th>
+              <th title="Faceoffs taken per gp" style="color: #d62718; font-weight: bold;">FO Taken/GP</th>
+              <th title="Faceoff win percentage" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">FO Win%</th>
+              <th title="DZ faceoffs taken per gp" style="color: #d62718; font-weight: bold;">DZ Taken/GP</th>
+              <th title="DZ faceoff win percentage" style = "color: #d62718; font-weight: bold;">DZ Win%</th>
+              <th title="NZ faceoffs taken per gp" style = "color: #d62718; font-weight: bold;">NZ Taken/GP</th>
+              <th title="NZ faceoff win percentage" style = "color: #d62718; font-weight: bold;">NZ Win%</th>
+              <th title="OZ faceoffs taken per gp" style = "color: #d62718; font-weight: bold;">OZ Taken/GP</th>
+              <th title="OZ faceoff win percentage" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">OZ Win%</th>
+          </thead>
+          <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+          <tr></tr> 
+          {% for tt in all_tt %}
+          {% if curr_display != 'Rank' %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.fo_taken_gp_percentile_color }};">{{ tt.fo_taken_gp }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.fo_win_percent_percentile_color }};">{% widthratio tt.fo_win_percent 1 100 %}%</td>
+              <td style="background-color: {{ tt.dzfo_taken_gp_percentile_color }};">{{ tt.dzfo_taken_gp}}</td>
+              <td style="background-color: {{ tt.dzfo_win_percent_percentile_color }};">{% widthratio tt.dzfo_win_percent 1 100 %}%</td>
+              <td style="background-color: {{ tt.nzfo_taken_gp_percentile_color }};">{{ tt.nzfo_taken_gp}}</td>
+              <td style="background-color: {{ tt.nzfo_win_percent_percentile_color }};">{% widthratio tt.nzfo_win_percent 1 100 %}%</td>
+              <td style="background-color: {{ tt.ozfo_taken_gp_percentile_color }};">{{ tt.ozfo_taken_gp}}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.ozfo_win_percent_percentile_color }};">{% widthratio tt.ozfo_win_percent 1 100 %}%</td>
+          </tr>
+          {% else %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.fo_taken_gp_percentile_color }};">{{ tt.fo_taken_gp_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.fo_win_percent_percentile_color }};">{{ tt.fo_win_percent_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.dzfo_taken_gp_percentile_color }};">{{ tt.dzfo_taken_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.dzfo_win_percent_percentile_color }};">{{ tt.dzfo_win_percent_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.nzfo_taken_gp_percentile_color }};">{{ tt.nzfo_taken_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.nzfo_win_percent_percentile_color }};">{{ tt.nzfo_win_percent_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.ozfo_taken_gp_percentile_color }};">{{ tt.ozfo_taken_gp_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.ozfo_win_percent_percentile_color }};">{{ tt.ozfo_win_percent_percentile|floatformat:0 }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+      </table>
+
+      {% else %}
+
+        <table style="text-align: center; width:100%; margin: 0px; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);" id="mytable1">
+          <col width="19%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <col width="9%"/>
+          <thead style="height: 40px;">
+            <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Team</td>
+            <td colspan="3" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Corsi</td>
+            <td colspan="3" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Fenwick</td>
+            <td colspan="2" style="text-align: middle; background-color: #F1959B; color: white; font-weight: bold; border-right: gray 0.75px solid;">Other</td>
+        </thead> 
+          <thead style="border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+              <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+              <th title="Games played" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">GP</th>
+              <th title="Corsi for (shot attempts)" style="color: #d62718; font-weight: bold;">CF/GP</th>
+              <th title="Corsi against (shots attempts)" style="color: #d62718; font-weight: bold;">CA/GP</th>
+              <th title="Corsi for percentage" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">CF%</th>
+              <th title="Fenwick for (shots attempts - blocked)" style = "color: #d62718; font-weight: bold;">FF/GP</th>
+              <th title="Fenwick against (shot attempts - blocked)" style = "color: #d62718; font-weight: bold;">FA/GP</th>
+              <th title="Fenwick for percentage" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">FF%</th>
+              <th title="Pass completion" style = "color: #d62718; font-weight: bold;">Pass%</th>
+              <th title="PDO" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">PDO</th>
+          </thead>
+          <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+          <tr></tr> 
+          {% for tt in all_tt %}
+          {% if curr_display != 'Rank' %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.CF_gp_percentile_color }};">{{ tt.CF_gp }}</td>
+              <td style="background-color: {{ tt.CA_gp_percentile_color }};">{{ tt.CA_gp }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.CF_percent_percentile_color }};">{% widthratio tt.CF_percent 1 100 %}%</td>
+              <td style="background-color: {{ tt.FF_gp_percentile_color }};">{{tt.FF_gp}}</td>
+              <td style="background-color: {{ tt.FA_gp_percentile_color }};">{{ tt.FA_gp}}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.FF_percent_percentile_color }};">{% widthratio tt.FF_percent 1 100 %}%</td>
+              <td style="background-color: {{ tt.pass_completion_percentile_color }};">{% widthratio tt.pass_completion 1 100 %}%</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.PDO_percentile_color }};">{{ tt.PDO|floatformat:3 }}</td>
+          </tr>
+          {% else %}
+          <tr onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''" style="height: 90px; font-size: 22px; font-weight: bold;">
+              <td><img src="{% static "" %}{{tt.team_id.flag_url}}" style="width:125px;height:65px;"></td>
+              <td style="border-right: gray 0.75px solid;">{{ tt.gp }}</td>
+              <td style="background-color: {{ tt.CF_gp_percentile_color }};">{{ tt.CF_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.CA_gp_percentile_color }};">{{ tt.CA_gp_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.CF_percent_percentile_color }};">{{ tt.CF_percent_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.FF_gp_percentile_color }};">{{ tt.FF_gp_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.FA_gp_percentile_color }};">{{ tt.FA_gp_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.FF_percent_percentile_color }};">{{ tt.FF_percent_percentile|floatformat:0 }}</td>
+              <td style="background-color: {{ tt.pass_completion_percentile_color }};">{{ tt.pass_completion_percentile|floatformat:0 }}</td>
+              <td style="border-right: gray 0.75px solid;background-color: {{ tt.PDO_percentile_color }};">{{ tt.PDO_percentile|floatformat:0 }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+      </table>
+
+        {% endif %}
+        </div>
+        
+            
+
+            
+
+
+
+    </div>
+
+
+    <script>
+        //  // Sorting code
+        //         var getCellValue = function(tr, idx){
+        //         console.log("here")
+        //         if (isNaN(parseFloat(tr.children[idx].innerText))){
+        //             return tr.children[idx].innerText
+        //         } else {
+        //             return parseFloat(tr.children[idx].innerText)
+        //         }
+        //         }
+        
+        //     var comparer = function(idx, asc) { return function(a, b) { return function(v1, v2) {
+        //             return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2);
+        //         }(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+        //     }};
+        
+        //     // do the work...
+        //     Array.prototype.slice.call(document.querySelectorAll('th')).forEach(function(th) { th.addEventListener('click', function() {
+        //             var table = th.parentNode
+        //             while(table.tagName.toUpperCase() != 'TABLE') table = table.parentNode;
+        //             Array.prototype.slice.call(table.querySelectorAll('tr:nth-child(n+2)'))
+        //                 .sort(comparer(Array.prototype.slice.call(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        //                 .forEach(function(tr) { table.appendChild(tr) });
+        //         })
+        //     }); 
+        
+            $(document).ready(function() {
+                $("table").tablesorter();
+             });
+        
+            $('#display_select, #state_select, #data_select').change(function(){
+                var data2 = encodeURIComponent(document.getElementById("data_select").value);
+                var state = encodeURIComponent(document.getElementById("state_select").value);
+                var display = encodeURIComponent(document.getElementById("display_select").value);
+                $.ajax({
+                    url: '{% url 'team_summary' %}',
+                    success: function(data) {
+                        $('#outertable').load('{% url 'team_summary' %}' + `?display=${display}&state=${state}&data=${data2}` + ' #outertable>*');
+                    }
+                });
+            });
+        
+        </script>
+
+</body>
+
+{% endblock %}
+
+</html>

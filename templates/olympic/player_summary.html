@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+{% extends "olympic/base.html" %}
+{% load static %}
+{% block body_block %}
+<html lang="en" dir="'ltr">
+<script src="{% static 'js/player_summary_myFunction.js' %}"></script>
+
+<body>
+
+<br>
+<div class="container" id = "overlap">
+    
+    <form action="" method="get" align="right" onkeydown="return event.key != 'Enter';">
+
+        <div class="form-group form-inline">
+
+                <div class="col-3">
+                    <label for="team_select" style="font-weight: bold;">Team:</label>
+                    <select id="team_select" name="team" class="form-select form-select-md custom-select pull-left" style="width: 150px;">
+                        {% for t in all_teams %}
+                            <option value = "{{ t }}"
+                                {% if t == curr_team %}selected="selected"{% endif %}>
+                                {{ t }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div> 
+
+                <div class="col-3">
+                    <label for="state_select" style="font-weight: bold;">State:</label>
+                    <select id="state_select" name="state" class="form-select form-select-md custom-select pull-left" style="width: 150px;">
+                        {% for s in all_states %}
+                            <option value = "{{ s }}"
+                                {% if s == curr_state %}selected="selected"{% endif %}>
+                                {{ s }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <label for="myInput" style="font-weight: bold;">Name:</label>
+                    <input class="searchbar pull-left" type="text" id="myInput" onkeyup="myFunction()" placeholder=" Search for player names"
+                        style="height: 40px; font-size: 16px; border-radius: 6px; border-color: #000000; border-width: 3px; font-weight: bold; width:94%;">
+                </div>
+
+        </div>
+
+
+    </form>
+
+    <!-- This will be a form for input -->
+
+
+    <h2 style="font-weight: bold;">Defensemen</h2>
+    <div id = "outerfreeze1">
+    <div id="freeze1" style="height: 300px; overflow-y: scroll; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);">
+        <table style="text-align: center; width:100%; table-layout:fixed; margin: 0px;" id="mytable1">
+            <col width="5%"/>
+            <col width="12%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="6%"/>
+            <col width="6%"/>
+            <col width="6%"/>
+            <col width="7%"/>
+
+            <thead style="height: 40px; z-index:2;">
+                <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Player</td>
+                <td colspan="6" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Boxscore</td>
+                <td colspan="3" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Exits</td>
+                <td colspan="4" style="text-align: middle; background-color: #F1959B; color: white; font-weight: bold;">Other</td>
+            </thead>  
+            <thead style="cursor: pointer; z-index:2; border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+                <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+                <th title="Player name" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">Player</th>
+                <th title="Games played" style="color: #d62718; font-weight: bold;">GP</th>
+                <th title="Corsi for per game (all shot attempts/gp)" style="color: #d62718; font-weight: bold;">CF/GP</th>
+                <th title="shots for per game" style="color: #d62718; font-weight: bold;">SF/GP</th>
+                <th title="Goals per game" style="color: #d62718; font-weight: bold;">G/GP</th>    
+                <th title="Assists per game" style="color: #d62718; font-weight: bold;">A/GP</th>
+                <th title="Points per game" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">P/GP</th>
+                <th title="Controlled exits per game" style="color: #d62718; font-weight: bold;">Ctrl/GP</th>
+                <th title="Proportion of all exits by player that are with control (carry or pass)" style="color: #d62718; font-weight: bold;">Ctrl%</th>
+                <th title="Proportion of all exits by player that are turned over" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">Turnover%</th>
+                <th title="Passing completion rate" style = "color: #d62718; font-weight: bold;">Pass%</th>
+                <th title="Penalty differential per game (penalties drawn - penalties taken)/gp" style = "color: #d62718; font-weight: bold;">Pen Diff/GP</th>
+                <th title="Defensive zone takeaways" style = "color: #d62718; font-weight: bold;">DZ Takes</th>
+                <th title="Defensive zone puck recoveries won" style = "color: #d62718; font-weight: bold;">DZ Recov</th>
+            </thead>
+            <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+            <tr></tr>  
+            {% for pt in all_pt %}
+            {% if pt.player_id.position == 'D' %}
+                <tr style="height: 30px; font-size: 14px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                    <td><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:25px;height:15px;"></td>
+                    <td style="border-right: gray 0.75px solid;">{{ pt.player_id.name }}</td>
+                    <td>{{ pt.gp }}</td>
+                    <td>{{ pt.CF_gp }}</td>
+                    <td>{{ pt.shots_for_gp }}</td>
+                    <td>{{ pt.g_gp }}</td>
+                    <td>{{ pt.a_gp }}</td>
+                    <td style="border-right: gray 0.75px solid;">{{ pt.p_gp }}</td>
+                    <td>{{pt.cx_gp}} </td>
+                    <td>{% widthratio pt.cx_rate 1 100 %}%</td>
+                    <td style="border-right: gray 0.75px solid;">{% widthratio pt.fx_rate 1 100 %}%</td>
+                    <td>{% widthratio pt.pass_completion 1 100 %}%</td>
+                    <td>{{ pt.penalty_diff_gp }}</td>
+                    <td>{{ pt.dz_takeaway_gp}}</td>
+                    <td style="border-right: gray 0.75px solid;">{{ pt.dz_recovery_gp }}</td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+    <br>
+    <br>
+
+    <h2 style="font-weight: bold;">Forwards</h2>
+    <div id="outerfreeze2">
+    <div id="freeze2" style="height: 300px; overflow-y: scroll; border-bottom: black 4px solid; border-top: black 4px solid; box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);">
+        <table style="text-align: center; width:100%; table-layout:fixed; margin: 0px;" id="mytable2">
+            <col width="5%"/>
+            <col width="12%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="5%"/>
+            <col width="6%"/>
+            <col width="6%"/>
+            <col width="6%"/>
+            <col width="7%"/>
+
+            <thead style="height: 40px; z-index:2;">
+                <td colspan="2" style="text-align: middle; background-color: #d62718; color: white; font-weight: bold; border-right: gray 0.75px solid;">Player</td>
+                <td colspan="6" style="text-align: middle; background-color: #EA4C46; color: white; font-weight: bold; border-right: gray 0.75px solid;">Boxscore</td>
+                <td colspan="3" style="text-align: middle; background-color: #F07470; color: white; font-weight: bold; border-right: gray 0.75px solid;">Entries</td>
+                <td colspan="4" style="text-align: middle; background-color: #F1959B; color: white; font-weight: bold;">Other</td>
+            </thead>  
+            <thead style="cursor: pointer; z-index:2; border-bottom: solid 3px black; height: 30px; vertical-align: bottom; cursor: pointer; font-size: 14px; background-color: #f5d9d7;">
+                <th title="Team flag" style="color: #d62718; font-weight: bold;">Team</th>
+                <th title="Player name" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">Player</th>
+                <th title="Games played" style="color: #d62718; font-weight: bold;">GP</th>
+                <th title="Corsi for per game (all shot attempts/gp)" style="color: #d62718; font-weight: bold;">CF/GP</th>
+                <th title="shots for per game" style="color: #d62718; font-weight: bold;">SF/GP</th>
+                <th title="Goals per game" style="color: #d62718; font-weight: bold;">G/GP</th>    
+                <th title="Assists per game" style="color: #d62718; font-weight: bold;">A/GP</th>
+                <th title="Points per game" style="color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">P/GP</th>
+                <th title="Controlled exits per game" style="color: #d62718; font-weight: bold;">Ctrl/GP</th>
+                <th title="Proportion of all exits by player that are with control (carry or pass)" style="color: #d62718; font-weight: bold;">Ctrl%</th>
+                <th title="Proportion of all exits by player that are turned over" style = "color: #d62718; font-weight: bold; border-right: gray 0.75px solid;">Turnover%</th>
+                <th title="Passing completion rate" style = "color: #d62718; font-weight: bold;">Pass Success%</th>
+                <th title="Penalty differential per game (penalties drawn - penalties taken)/gp" style = "color: #d62718; font-weight: bold;">Pen Diff/GP</th>
+                <th title="Faceoffs taken" style = "color: #d62718; font-weight: bold;">FO Taken</th>
+                <th title="Faceoff win percentage" style = "color: #d62718; font-weight: bold;">FO%</th>
+            </thead>
+            <!-- KEEP THIS BLANK ROW DUE TO COLUMN SORTING GLITCH -->
+            <tr></tr>  
+            {% for pt in all_pt %}
+            {% if pt.player_id.position == 'F' %}
+                <tr style="height: 30px; font-size: 14px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                    <td><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:25px;height:15px;"></td>
+                    <td style="border-right: gray 0.75px solid;">{{ pt.player_id.name }}</td>
+                    <td>{{ pt.gp }}</td>
+                    <td>{{ pt.CF_gp }}</td>
+                    <td>{{ pt.shots_for_gp }}</td>
+                    <td>{{ pt.g_gp }}</td>
+                    <td>{{ pt.a_gp }}</td>
+                    <td style="border-right: gray 0.75px solid;">{{ pt.p_gp }}</td>
+                    <td>{{pt.ce_gp}} </td>
+                    <td>{% widthratio pt.ce_rate 1 100 %}%</td>
+                    <td style="border-right: gray 0.75px solid;">{% widthratio pt.fe_rate 1 100 %}%</td>
+                    <td>{% widthratio pt.pass_completion 1 100 %}%</td>
+                    <td>{{ pt.penalty_diff_gp }}</td>
+                    <td>{{ pt.fo_taken_gp }}</td>
+                    <td style="border-right: gray 0.75px solid;">{% widthratio pt.fo_win_percent 1 100 %}%</td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+    <br>
+    <br>
+    <br>
+                
+    
+
+    
+</div>
+
+<script>
+//  // Sorting code
+//         var getCellValue = function(tr, idx){
+//         console.log("here")
+//         if (isNaN(parseFloat(tr.children[idx].innerText))){
+//             return tr.children[idx].innerText
+//         } else {
+//             return parseFloat(tr.children[idx].innerText)
+//         }
+//         }
+
+//     var comparer = function(idx, asc) { return function(a, b) { return function(v1, v2) {
+//             return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2);
+//         }(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+//     }};
+
+//     // do the work...
+//     Array.prototype.slice.call(document.querySelectorAll('th')).forEach(function(th) { th.addEventListener('click', function() {
+//             var table = th.parentNode
+//             while(table.tagName.toUpperCase() != 'TABLE') table = table.parentNode;
+//             Array.prototype.slice.call(table.querySelectorAll('tr:nth-child(n+2)'))
+//                 .sort(comparer(Array.prototype.slice.call(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+//                 .forEach(function(tr) { table.appendChild(tr) });
+//         })
+//     }); 
+
+    $(document).ready(function() {
+        $("table").tablesorter();
+     });
+
+    $('#team_select, #state_select').change(function(){
+        document.getElementById("myInput").value = "";
+        var team = encodeURIComponent(document.getElementById("team_select").value);
+        var state = encodeURIComponent(document.getElementById("state_select").value);
+        $.ajax({
+            url: '{% url 'player_summary' %}',
+            success: function(data) {
+                $('#outerfreeze1').load('{% url 'player_summary' %}' + `?team=${team}&state=${state}` + ' #outerfreeze1>*');
+                $('#outerfreeze2').load('{% url 'player_summary' %}' + `?team=${team}&state=${state}` + ' #outerfreeze2>*');
+            }
+        });
+    });
+
+</script>
+
+</body>
+
+{% endblock %}
+
+</html>

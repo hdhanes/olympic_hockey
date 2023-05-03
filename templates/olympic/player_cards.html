@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+{% extends "olympic/base.html" %}
+{% load static %}
+{% block body_block %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <br>
+
+    <div class="container">
+        <h2 style="font-weight: bold;">Player Cards</h2>
+        <div class="row">
+        <div class="col-3">
+            <div id="accordion">
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <img src="{% static "images/canada.png" %}" style="width:95px;height:40px;padding-right: 15px;"><span style="font-weight: bold; font-size: 24px;">Canada</span>
+                      </button>
+                    </h5>
+                  </div>
+              
+                  <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div style="height: 240px; overflow-y: scroll; padding: 0px;">
+                    <table class="col-12" style="border:1px solid lightgray; border-radius: 20px;">
+            
+                        {% for pt in all_pt %}
+                        {% if pt.team_id.name == 'Canada' %}
+                            <tr class="click-me" style="height: 40px; font-size: 13px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                                <td style="border-bottom:1px solid lightgray;"><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:35px;height:21px;margin-right: 10px;margin-left: 15px;"><span style="font-weight: bold;">{{pt.player_id.name}}, {{pt.player_id.position}}</span></td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+            
+                    </table>
+                </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <img src="{% static "images/finland.png" %}" style="width:95px;height:40px;padding-right: 15px;"><span style="font-weight: bold; font-size: 24px;">Finland</span>
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div style="height: 240px; overflow-y: scroll; padding: 0px;">
+                        <table class="col-12" style="border:1px solid lightgray; border-radius: 20px;">
+            
+                            {% for pt in all_pt %}
+                            {% if pt.team_id.name == 'Finland' %}
+                                <tr class="click-me" style="height: 40px; font-size: 13px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                                    <td style="border-bottom:1px solid lightgray;"><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:35px;height:21px;margin-right: 10px;margin-left: 15px;"><span style="font-weight: bold;">{{pt.player_id.name}}, {{pt.player_id.position}}</span></td>
+                                </tr>
+                            {% endif %}
+                            {% endfor %}
+                
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <img src="{% static "images/roc.jpeg" %}" style="width:95px;height:40px;padding-right: 15px;"><span style="font-weight: bold; font-size: 24px;">ROC</span>
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                    <div style="height: 240px; overflow-y: scroll; padding: 0px;">
+                        <table class="col-12" style="border:1px solid lightgray; border-radius: 20px;">
+            
+                            {% for pt in all_pt %}
+                            {% if pt.team_id.name == 'ROC' %}
+                                <tr class="click-me" style="height: 40px; font-size: 13px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                                    <td style="border-bottom:1px solid lightgray;"><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:35px;height:21px;margin-right: 10px;margin-left: 15px;"><span style="font-weight: bold;">{{pt.player_id.name}}, {{pt.player_id.position}}</span></td>
+                                </tr>
+                            {% endif %}
+                            {% endfor %}
+                
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingFour">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                          <img src="{% static "images/usa.png" %}" style="width:95px;height:40px;padding-right: 15px;"><span style="font-weight: bold; font-size: 24px;">USA</span>
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                        <div style="height: 240px; overflow-y: scroll; padding: 0px;">
+                            <table class="col-12" style="border:1px solid lightgray; border-radius: 20px; height: 240px; overflow-y: scroll;">
+            
+                                {% for pt in all_pt %}
+                                {% if pt.team_id.name == 'United States' %}
+                                    <tr class="click-me" style="height: 40px; font-size: 13px;" onmouseover="this.style.backgroundColor='rgb(235, 235, 235)'" onmouseout="this.style.backgroundColor=''">
+                                        <td style="border-bottom:1px solid lightgray;"><img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:35px;height:21px;margin-right: 10px;margin-left: 15px;"><span style="font-weight: bold;">{{pt.player_id.name}}, {{pt.player_id.position}}</span></td>
+                                    </tr>
+                                {% endif %}
+                                {% endfor %}
+                    
+                            </table>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+        </div>
+
+        <div class="col-9">
+
+
+            {% for pt in all_pt %}
+
+            <div id="{{pt.concat_name}}" class="hide-me">
+            <table class="col-12" style=" height: 225px;padding:0px;">
+            
+                <tr style="height: 225px;">
+                    <td style="width: 175px;">
+                            <div class="big-square" style="background-color: {{pt.CF_gp_percentile_col}};">{%widthratio pt.CF_gp_percentile 1 100%}%</div>
+                            <p class="big-square-label">CF/GP</p>                   
+                    </td>
+                    <td style=" width:450px; padding-bottom: 66px;">
+                        <h1 style="font-weight:bold;">{{pt.player_id.name}}</h1>
+                        <h4>GP: {{pt.gp}}</h4>
+                        <h4>Team: {{pt.team_id.name}}</h4>
+                        <h4>Position: {{pt.player_id.position}}</h4>
+                    </td>
+                    <td style="width:190px;">
+                        <img src="{% static "" %}{{pt.team_id.flag_url}}" style="width:175px;height:105px; margin-bottom: 120px; margin-left:15px;border:1px solid lightgray;">
+                    </td>
+                </tr>
+
+                <!-- <tr style="border:1px solid lightgray;height:125px;">
+                    <td style="border:1px solid lightgray; width: 125px;">
+                        <div class="square">{%widthratio pt.CF_gp_percentile 1 100%}%</div>
+                    </td> 
+                    <td style="border:1px solid lightgray; width: 105px;">f
+                    </td> 
+                </tr> -->
+
+            </table>
+
+            <br>
+
+            <table class="col-12" style=" height: 175px;padding:0px;">
+            
+                <tr style="height: 125px;">
+                    <td style=" width: 125px;">
+                            <div class="square" style="background-color: {{pt.g_gp_percentile_col}};">{%widthratio pt.g_gp_percentile 1 100%}%</div>
+                            <p class="square-label">G/GP</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.a_gp_percentile_col}};">{%widthratio pt.a_gp_percentile 1 100%}%</div>
+                        <p class="square-label">A/GP</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.pp_percentile_col}};">{%widthratio pt.pp_percentile 1 100%}%</div>
+                        <p class="square-label">PP Shots/GP</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.pk_percentile_col}};">{%widthratio pt.pk_percentile 1 100%}%</div>
+                        <p class="square-label">PK Shots/GP</p> 
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <br>
+
+            <table class="col-12" style="height: 175px;padding:0px;">
+            
+                <tr style="height: 125px;">
+                    <td style="width: 125px;">
+                            <div class="square" style="background-color: {{pt.cx_rate_percentile_col}};">{%widthratio pt.cx_rate_percentile 1 100%}%</div>
+                            <p class="square-label">Ctrl Exit%</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.ce_rate_percentile_col}};">{%widthratio pt.ce_rate_percentile 1 100%}%</div>
+                        <p class="square-label">Ctrl Entry%</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.pass_completion_percentile_col}};">{%widthratio pt.pass_completion_percentile 1 100%}%</div>
+                        <p class="square-label">Pass Success%</p> 
+                    </td>
+                    <td style="width: 125px;">
+                        <div class="square" style="background-color: {{pt.shooting_percent_percentile_col}};">{%widthratio pt.shooting_percent_percentile 1 100%}%</div>
+                        <p class="square-label">Shooting%</p> 
+                    </td>
+
+                </tr>
+
+            </table>
+
+            
+
+
+        </div>
+                <!-- <tr style="border:1px solid lightgray;height:50px;">
+                    <td>hi</td>
+                </tr>
+                <tr style="border:1px solid lightgray;height:25px;">
+                    <td></td>
+                </tr>
+
+                <tr style="border:1px solid lightgray;height:125px;">
+                    <td>hi</td>
+                </tr>
+                <tr style="border:1px solid lightgray;height:50px;">
+                    <td>hi</td>
+                </tr> --> 
+    
+            
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+       
+
+    </div>
+
+    <br>
+    
+    
+</body>
+
+<script>
+
+$(document).ready(function() {
+    $("{{name_string}}").not('#Marie-PhilipPoulin').hide();
+    $("{{name_string}}").filter("#Marie-PhilipPoulin").show();
+    $(".click-me").on('click', function() {
+        var click_id = this.innerText
+        click_id = click_id.substring(0, click_id.length-3)
+        click_id = click_id.replace(/\s/g, '');
+        click_id = "#" + click_id
+        console.log(click_id);
+        $("{{name_string}}").not(click_id).hide();
+        $("{{name_string}}").filter(click_id).show();
+        
+    })
+})
+
+
+
+</script>
+
+{% endblock %}
+
+</html>

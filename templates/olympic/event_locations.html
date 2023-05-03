@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "olympic/base.html" %}
+{% load static %}
+{% block body_block %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "css/bokeh.css" %}">
+</head>
+<body>
+
+    <br>
+    
+
+    <div class="container" style="margin-left: 10px;">
+        <h2 style="font-weight: bold;">Event Location Visualizer</h2>
+        {{ event_div | safe }}
+        {{ event_script | safe }}
+    </div>
+    
+</body>
+
+{% endblock %}
+
+</html>
