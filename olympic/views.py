@@ -161,6 +161,8 @@ def event_locations(request):
     
     #query all shots
     event_list_dict = []
+    
+    print("begin query")
     all_shots = Shots.objects.all()
     for s in all_shots:
         
@@ -241,6 +243,9 @@ def event_locations(request):
         d['Details'] = s.result + (f", {s.shot_type}" if len(s.shot_type) > 0 else "") + (", traffic" if s.traffic == 'True' else "") + (", one-timer" if s.one_timer == 'True' else "")
         event_list_dict.append(d)
         
+    print("done shots")
+
+        
     #query all passes
     all_passes = Passes.objects.all()
     for p in all_passes:
@@ -314,6 +319,8 @@ def event_locations(request):
         d['Details'] = ('Play' if p.success else 'Incomplete play') + ', ' + p.pass_type + ', receiver: ' + p.receiver_id.name
         event_list_dict.append(d)
         
+    print("done passes")
+        
     #query all takeaways
     all_takes = Takeaways.objects.all()
     for t in all_takes:
@@ -381,6 +388,8 @@ def event_locations(request):
         d['Details'] = ('nz' if t.zone == 'nz' else ('oz' if t.zone != 'oz' else 'dz'))
         event_list_dict.append(d)
         
+    print("done takeaways")
+        
     #query all recoveries
     all_recov = Recoveries.objects.all()
     for r in all_recov:
@@ -447,6 +456,8 @@ def event_locations(request):
         d['y2'] = -100
         d['Details'] = ('nz' if r.zone == 'nz' else ('oz' if r.zone != 'oz' else 'dz'))
         event_list_dict.append(d)
+        
+    print("done recoveries")
         
     #query all penalties
     all_pen = Penalties.objects.all()
@@ -527,6 +538,8 @@ def event_locations(request):
         d['Details'] = ('Drawn' if r.taken else 'Taken') + ', ' + r.infraction_type
         event_list_dict.append(d)
         
+    print("done penalties")
+        
     #query all faceoffs
     all_f = Faceoffs.objects.all()
     for r in all_f:
@@ -599,6 +612,8 @@ def event_locations(request):
         d['y2'] = -100
         d['Details'] = ('Won' if r.success else 'Lost') + ', ' + r.zone
         event_list_dict.append(d)
+        
+    print("done faceoffs")
         
     all_ee = EE.objects.all()
     for s in all_ee:
@@ -689,7 +704,7 @@ def event_locations(request):
             d['Details'] = s.type_ee         
         event_list_dict.append(d)
         
-        
+    print("done ee")
         
     #create dataframe and data source
     df = pd.DataFrame(event_list_dict)
@@ -727,6 +742,8 @@ def event_locations(request):
     p = figure(height=510, title="", toolbar_location=None, tooltips=tooltips, width=1200,
                x_range=(-5,205), y_range=(-5,90))
     p.grid.visible = False
+    
+    print("graph plotted")
     
     #callbacks
     filter = IndexFilter(indices=idx)
@@ -789,6 +806,8 @@ def event_locations(request):
     layout = row(inputs, p)
                 
     event_script, event_div = components(layout, CDN)
+    print(event_script)
+    print(event_div)
     context_dict['event_script'] = event_script
     context_dict['event_div'] = event_div
     
